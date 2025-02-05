@@ -28,8 +28,8 @@ steps:
     targetType: 'inline'
     script: |
       # Configurar las credenciales de AWS desde las variables de entorno
-      $env:AWS_ACCESS_KEY_ID = "$(AWS_ACCESS_KEY_ID)"
-      $env:AWS_SECRET_ACCESS_KEY = "$(AWS_SECRET_ACCESS_KEY)"
+        $env:AWS_ACCESS_KEY_ID = "$(AWS_ACCESS_KEY_ID)"
+        $env:AWS_SECRET_ACCESS_KEY = "$(AWS_SECRET_ACCESS_KEY)"
       
       # Ejecutar comandos de AWS CLI
       & "C:\Program Files\Amazon\AWSCLIV2\aws.exe" s3 sync ./dist s3://mi-frontend-s3 --delete
