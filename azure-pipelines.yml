@@ -1,0 +1,31 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main  # Se ejecuta cuando hay cambios en la rama 'main'
+
+pool:
+  vmImage: 'ubuntu-latest'  # Usa una máquina con Linux
+
+steps:
+- task: NodeTool@0
+  inputs:
+    versionSpec: '18.x'  # Usa Node.js 18 para compilar el frontend
+
+- script: |
+    npm install
+    npm run build
+  displayName: 'Instalar dependencias y construir la app'
+
+- task: AWSShellScript@1
+  inputs:
+    awsCredentials: 'AWS-CREDENTIALS'  # Nombre del grupo de variables en Azure DevOps
+    regionName: 'us-east-1'  # Cambia a la región donde creaste el bucket S3
+    scriptType: 'inline'
+    inlineScript: |
+      aws s3 sync ./dist s3://mi-frontend-s3 --delete
+      aws cloudfront create-invalidation --distribution-id E12EXAMPLE123 --paths "/*"
+  displayName: 'Desplegar en S3 y limpiar la caché de CloudFront'
+
