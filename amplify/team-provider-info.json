@@ -1,0 +1,23 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-retoaws-dev-d13fc-authRole",
+      "UnauthRoleArn": "arn:aws:iam::054037116483:role/amplify-retoaws-dev-d13fc-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::054037116483:role/amplify-retoaws-dev-d13fc-authRole",
+      "Region": "us-east-2",
+      "DeploymentBucketName": "amplify-retoaws-dev-d13fc-deployment",
+      "UnauthRoleName": "amplify-retoaws-dev-d13fc-unauthRole",
+      "StackName": "amplify-retoaws-dev-d13fc",
+      "StackId": "arn:aws:cloudformation:us-east-2:054037116483:stack/amplify-retoaws-dev-d13fc/e6e81930-e33f-11ef-8f7a-0a217a64aee7",
+      "AmplifyAppId": "d13lq6g274x0wi"
+    },
+    "categories": {
+      "auth": {
+        "retoawse403e0e4": {}
+      },
+      "hosting": {
+        "S3AndCloudFront": {}
+      }
+    }
+  }
+}
