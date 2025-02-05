@@ -26,8 +26,8 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      "C:\Program Files\Amazon\AWSCLIV2\aws.exe" s3 sync ./dist s3://mi-frontend-s3 --delete
-      "C:\Program Files\Amazon\AWSCLIV2\aws.exe" cloudfront create-invalidation --distribution-id E12EXAMPLE123 --paths "/*"
+      & "C:\Program Files\Amazon\AWSCLIV2\aws.exe" s3 sync ./dist s3://mi-frontend-s3 --delete
+      & "C:\Program Files\Amazon\AWSCLIV2\aws.exe" cloudfront create-invalidation --distribution-id E12EXAMPLE123 --paths "/*"
   displayName: 'Desplegar en S3 y limpiar la caché de CloudFront'
 
 
