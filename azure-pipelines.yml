@@ -19,12 +19,11 @@ steps:
     npm run build
   displayName: 'Instalar dependencias y construir la app'
 
-- task: AWSShellScript@1
+# ✅ Usa AWSCLI@1 para manejar las credenciales de AWS
+- task: Bash@3
   inputs:
-    awsCredentials: 'AWS-CREDENTIALS'  # Nombre del grupo de variables en Azure DevOps
-    regionName: 'us-east-1'  # Cambia a la región donde creaste el bucket S3
-    scriptType: 'inline'
-    inlineScript: |
+    targetType: 'inline'
+    script: |
       aws s3 sync ./dist s3://mi-frontend-s3 --delete
       aws cloudfront create-invalidation --distribution-id E12EXAMPLE123 --paths "/*"
   displayName: 'Desplegar en S3 y limpiar la caché de CloudFront'
