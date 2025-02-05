@@ -7,32 +7,37 @@ trigger:
 - main  # Se ejecuta cuando hay cambios en la rama 'main'
 
 pool:
-  name: Default  # Usar el nombre del pool de agentes auto-hospedados (ajústalo según el nombre de tu pool)
+  name: Default  # Nombre del pool de agentes auto-hospedados
   demands:
-    - agent.name -equals FREYZZER-VALENC  # Asegúrate de usar el nombre del agente auto-hospedado
+    - agent.name -equals FREYZZER-VALENC  # Asegúrate de usar el nombre correcto de tu agente
 
 steps:
 - task: NodeTool@0
   inputs:
-    versionSpec: '18.x'  # Usa Node.js 18 para compilar el frontend
+    versionSpec: '18.x'  # Usa Node.js 18 para compilar React
 
 - script: |
+    echo "📦 Instalando dependencias..."
     npm install
+
+    echo "⚡ Generando build de React..."
     npm run build
   displayName: 'Instalar dependencias y construir la app'
-
-# ✅ Usa AWSCLI@1 para manejar las credenciales de AWS
 
 - task: PowerShell@2
   inputs:
     targetType: 'inline'
     script: |
-      # Configurar las credenciales de AWS desde las variables de entorno
-        $env:AWS_ACCESS_KEY_ID = "$(AWS_ACCESS_KEY_ID)"
-        $env:AWS_SECRET_ACCESS_KEY = "$(AWS_SECRET_ACCESS_KEY)"
-      
-      # Ejecutar comandos de AWS CLI
-      & "C:\Program Files\Amazon\AWSCLIV2\aws.exe" s3 sync ./dist s3://mi-frontend-s3 --delete
+      Write-Host "🔍 Verificando estructura de archivos antes de subir a S3..."
+      Get-ChildItem -Path . -Recurse
+
+      Write-Host "🔐 Configurando credenciales de AWS..."
+      [System.Environment]::SetEnvironmentVariable("AWS_ACCESS_KEY_ID", "$(AWS_ACCESS_KEY_ID)", "Process")
+      [System.Environment]::SetEnvironmentVariable("AWS_SECRET_ACCESS_KEY", "$(AWS_SECRET_ACCESS_KEY)", "Process")
+
+      Write-Host "☁️ Subiendo archivos a S3..."
+      & "C:\Program Files\Amazon\AWSCLIV2\aws.exe" s3 sync ./build s3://mi-frontend-s3 --delete --region us-east-1
+
+      Write-Host "🌀 Limpiando la caché de CloudFront..."
       & "C:\Program Files\Amazon\AWSCLIV2\aws.exe" cloudfront create-invalidation --distribution-id E12EXAMPLE123 --paths "/*"
   displayName: 'Desplegar en S3 y limpiar la caché de CloudFront'
-
