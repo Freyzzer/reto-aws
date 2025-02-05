@@ -36,8 +36,8 @@ steps:
       [System.Environment]::SetEnvironmentVariable("AWS_SECRET_ACCESS_KEY", "$(AWS_SECRET_ACCESS_KEY)", "Process")
 
       Write-Host "☁️ Subiendo archivos a S3..."
-      & "C:\Program Files\Amazon\AWSCLIV2\aws.exe" s3 sync ./build s3://mi-frontend-s3 --delete --region us-east-1
+      & "C:\Program Files\Amazon\AWSCLIV2\aws.exe" s3 sync ./build s3://mi-frontend-s3 --delete --region us-east-2
 
       Write-Host "🌀 Limpiando la caché de CloudFront..."
-      & "C:\Program Files\Amazon\AWSCLIV2\aws.exe" cloudfront create-invalidation --distribution-id E12EXAMPLE123 --paths "/*"
+      & "C:\Program Files\Amazon\AWSCLIV2\aws.exe" cloudfront create-invalidation --distribution-id E19AWFGK4NV1FF --paths "/*"
   displayName: 'Desplegar en S3 y limpiar la caché de CloudFront'
