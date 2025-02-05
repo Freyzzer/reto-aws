@@ -7,7 +7,9 @@ trigger:
 - main  # Se ejecuta cuando hay cambios en la rama 'main'
 
 pool:
-  vmImage: 'ubuntu-latest'  # Usa una máquina con Linux
+  name: Default  # Usar el nombre del pool de agentes auto-hospedados (ajústalo según el nombre de tu pool)
+  demands:
+    - agent.name -equals FREYZZER-VALENC  # Asegúrate de usar el nombre del agente auto-hospedado
 
 steps:
 - task: NodeTool@0
@@ -27,4 +29,5 @@ steps:
       aws s3 sync ./dist s3://mi-frontend-s3 --delete
       aws cloudfront create-invalidation --distribution-id E12EXAMPLE123 --paths "/*"
   displayName: 'Desplegar en S3 y limpiar la caché de CloudFront'
+
 
