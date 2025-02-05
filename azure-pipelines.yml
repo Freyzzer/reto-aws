@@ -22,7 +22,7 @@ steps:
   displayName: 'Instalar dependencias y construir la app'
 
 # ✅ Usa AWSCLI@1 para manejar las credenciales de AWS
-- task: Bash@3
+- task: PowerShell@2
   inputs:
     targetType: 'inline'
     script: |
