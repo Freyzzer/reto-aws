@@ -1,39 +1,46 @@
 trigger:
-- main  # Se ejecuta cuando hay cambios en la rama 'main'
+  - main
 
 pool:
-  name: Default  # Nombre del pool de agentes auto-hospedados
-  demands: []  # Asegúrate de usar el nombre correcto de tu agente
+  name: default
+  demands: []
 
 steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '18.x'  # Usa Node.js 18 para compilar React
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '18.x'
+    displayName: '⚙️ Instalar Node.js'
 
-- script: |
-    echo "📦 Instalando dependencias..."
-    npm install
-  displayName: 'Instalar dependencias y construir la app'
-  
-- script: |
-    echo "⚡ Generando build de React..."
-    npm run build
-  displayName: 'Generar build de React'
+  - task: Npm@1
+    inputs:
+      command: 'install'
+      workingDir: '.'
+    displayName: '📦 Instalar dependencias con npm'
 
-- task: PowerShell@2
-  inputs:
-    targetType: 'inline'
-    script: |
-      Write-Host "🔍 Verificando estructura de archivos antes de subir a S3..."
-      Get-ChildItem -Path ./dist -Recurse  # Muestra archivos de la carpeta dist
+  - task: Npm@1
+    inputs:
+      command: 'custom'
+      customCommand: 'run build'
+      workingDir: '.'
+    displayName: '⚙️ Ejecutar npm run build'
 
-      Write-Host "🔐 Configurando credenciales de AWS..."
-      [System.Environment]::SetEnvironmentVariable("AWS_ACCESS_KEY_ID", "$(AWS_ACCESS_KEY_ID)", "Process")
-      [System.Environment]::SetEnvironmentVariable("AWS_SECRET_ACCESS_KEY", "$(AWS_SECRET_ACCESS_KEY)", "Process")
+  - script: |
+      echo "✅ Node.js y dependencias instaladas correctamente"
+      node -v
+      npm -v
+      echo "📂 Contenido de la carpeta dist/"
+      ls -R dist
+    displayName: '📂 Verificar contenido de la carpeta dist'
+    continueOnError: false
 
-      Write-Host "☁️ Subiendo archivos a S3..."
-      & "C:\Program Files\Amazon\AWSCLIV2\aws.exe" s3 sync ./dist s3://reto-aws --delete --region us-east-2 --exact-timestamps
-
-      Write-Host "🌀 Limpiando la caché de CloudFront..."
-      & "C:\Program Files\Amazon\AWSCLIV2\aws.exe" cloudfront create-invalidation --distribution-id E19AWFGK4NV1FF --paths "/*"
-  displayName: 'Desplegar en S3 y limpiar la caché de CloudFront'
+  - task: PowerShell@2
+    inputs:
+      targetType: 'inline'
+      script: |
+        Write-Host "🔍 Verificando estructura de archivos antes de subir a S3..."
+        Get-ChildItem -Path dist -Recurse
+        Write-Host "☁️ Subiendo archivos a S3..."
+        & "C:\Program Files\Amazon\AWSCLIV2\aws.exe" s3 sync ./dist s3://reto-aws --delete --region us-east-2
+        Write-Host "🌀 Limpiando la caché de CloudFront..."
+        & "C:\Program Files\Amazon\AWSCLIV2\aws.exe" cloudfront create-invalidation --distribution-id E19AWFGK4NV1FF --paths "/*"
+    displayName: '☁️ Desplegar en S3 y limpiar la caché de CloudFront'
