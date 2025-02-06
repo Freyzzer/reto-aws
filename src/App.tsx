@@ -24,11 +24,11 @@ function App() {
           count is {count}
         </button>
         <p>
-          hola pleaseeee
+          ghghjjjkkj
         </p>
       </div>
       <p className="read-the-docs">
-        Si Funciono
+        gfhhhj
       </p>
     </>
   )
