@@ -28,8 +28,8 @@ steps:
   inputs:
     targetType: 'inline'
     script: |
-      Write-Host "📁 Contenido del directorio 'build':"
-      Get-ChildItem -Path ./dist -Recurse
+      Write-Host "🔍 Verificando estructura de archivos antes de subir a S3..."
+      Get-ChildItem -Path ./dist -Recurse  # Muestra archivos de la carpeta dist
 
       Write-Host "🔐 Configurando credenciales de AWS..."
       [System.Environment]::SetEnvironmentVariable("AWS_ACCESS_KEY_ID", "$(AWS_ACCESS_KEY_ID)", "Process")
