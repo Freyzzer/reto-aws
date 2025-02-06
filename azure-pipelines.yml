@@ -8,8 +8,7 @@ trigger:
 
 pool:
   name: Default  # Nombre del pool de agentes auto-hospedados
-  demands:
-    - agent.name -equals FREYZZER-VALENC  # Asegúrate de usar el nombre correcto de tu agente
+  demands: []  # Asegúrate de usar el nombre correcto de tu agente
 
 steps:
 - task: NodeTool@0
