@@ -1,0 +1,36 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: reyzzer12
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: reto-aws
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: lambda-user
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+
+functions:
+  getUsers:
+    handler: handler.getUsers
+    events:
+      - http:
+          path: users
+          method: get
+  createUser:
+    handler: handler.createUser
+    events:
+      - http:
+          path: users
+          method: post
+  updateUser:
+    handler: handler.updateUser
+    events:
+      - http:
+          path: users/{id}
+          method: put
+  deleteUser:
+    handler: handler.deleteUser
+    events:
+      - http:
+          path: users/{id}
+          method: delete
