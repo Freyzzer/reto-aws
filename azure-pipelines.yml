@@ -36,7 +36,7 @@ steps:
       [System.Environment]::SetEnvironmentVariable("AWS_SECRET_ACCESS_KEY", "$(AWS_SECRET_ACCESS_KEY)", "Process")
 
       Write-Host "☁️ Subiendo archivos a S3..."
-      & "C:\Program Files\Amazon\AWSCLIV2\aws.exe" s3 sync ./dist s3://mi-frontend-s3 --delete --region us-east-2
+      & "C:\Program Files\Amazon\AWSCLIV2\aws.exe" s3 sync ./dist s3://mi-frontend-s3 --delete --region us-east-2 --exact-timestamps
 
       Write-Host "🌀 Limpiando la caché de CloudFront..."
       & "C:\Program Files\Amazon\AWSCLIV2\aws.exe" cloudfront create-invalidation --distribution-id E19AWFGK4NV1FF --paths "/*"
