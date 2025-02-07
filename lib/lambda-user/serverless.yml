@@ -1,13 +1,25 @@
-# "org" ensures this Service is used with the correct Serverless Framework Access Key.
-org: reyzzer12
-# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
-app: reto-aws
-# "service" is the name of this project. This will also be added to your AWS resource names.
 service: lambda-user
 
 provider:
   name: aws
   runtime: nodejs20.x
+  environment:
+    DYNAMODB_TABLE: Usuarios
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+        - dynamodb:GetItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:Scan
+      Resource:
+        Fn::Sub: arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:provider.environment.DYNAMODB_TABLE}
+
+package:
+  include:
+    - node_modules/@aws-sdk/**
+
 
 functions:
   getUsers:
@@ -26,11 +38,26 @@ functions:
     handler: handler.updateUser
     events:
       - http:
-          path: users/{id}
+          path: users
           method: put
   deleteUser:
     handler: handler.deleteUser
     events:
       - http:
-          path: users/{id}
+          path: users
           method: delete
+
+
+resources:
+  Resources:
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Usuarios
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST  # 🔹 Evita definir ReadCapacityUnits/WriteCapacityUnits
