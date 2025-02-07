@@ -5,6 +5,8 @@ provider:
   runtime: nodejs20.x
   environment:
     DYNAMODB_TABLE: Usuarios
+    IAM_ROLE_AWS: ${ssm(us-east-2):/mi-api/rol_iam_aws}
+    SNS_TOPIC_ARN: ${ssm(us-east-2):/mi-api/sns_topic_arn}
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -15,6 +17,12 @@ provider:
         - dynamodb:Scan
       Resource:
         Fn::Sub: arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${self:provider.environment.DYNAMODB_TABLE}
+
+    - Effect: Allow
+      Action:
+        - sns:Publish
+      Resource: ${self:provider.environment.SNS_TOPIC_ARN}
+
 
 package:
   include:
@@ -44,9 +52,14 @@ functions:
     handler: handler.deleteUser
     events:
       - http:
-          path: users
+          path: users/{id}
           method: delete
-
+  sendEmail:
+    handler: handler.sendEmail
+    events:
+      - http:
+          path: email/send
+          method: post
 
 resources:
   Resources:
