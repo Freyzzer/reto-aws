@@ -3,6 +3,9 @@ service: lambda-user
 provider:
   name: aws
   runtime: nodejs20.x
+  region: us-east-2 
+  logs: 
+    restApi: true
   environment:
     DYNAMODB_TABLE: Usuarios
     IAM_ROLE_AWS: ${ssm(us-east-2):/mi-api/rol_iam_aws}
